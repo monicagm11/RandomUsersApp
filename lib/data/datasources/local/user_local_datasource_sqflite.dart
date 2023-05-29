@@ -58,19 +58,17 @@ class UserLocalDataSource {
 
   Future<void> deleteUser(id) async {
     Database db = await database;
-    //TODO
-    // aquí se debe llamar al db.delete usando el where con el id  - tabla users
+    await db.delete(tableName, where: 'id = ?', whereArgs: [id]);
   }
 
   Future<void> deleteAll() async {
     Database db = await database;
-    //TODO
-    // aquí se debe llamar al db.delete  - tabla users
+    await db.delete(tableName);
   }
 
   Future<void> updateUser(RandomUser user) async {
     Database db = await database;
-    //TODO
-    // aquí se debe llamar al db.update actualizando nombre y cuidad usando el where con el id  - tabla users
+    await db
+        .update(tableName, user.toMap(), where: 'id = ?', whereArgs: [user.id]);
   }
 }
