@@ -1,12 +1,10 @@
+
+import 'dart:math';
+
 import 'package:http/http.dart' as http;
 import 'package:loggy/loggy.dart';
-
-import '../../../domain/entities/random_user.dart';
-
-import '../../models/random_user_json_response_model.dart';
 import 'dart:convert';
-
-import '../../models/random_user_model.dart';
+import '../../../domain/entities/random_user.dart';
 
 class UserRemoteDatatasource {
   Future<RandomUser> getUser() async {
@@ -26,9 +24,17 @@ class UserRemoteDatatasource {
       logInfo("Got code 200");
 
       var jsonString = response.body;
+      var results = jsonDecode(jsonString)['results'];
+      var newUser = results[0];
+      var locationData = newUser['location'];
+      var nameData = newUser['name'];
+      var pictureData = newUser['picture'];
+
+      var completeName = "${nameData['first']} ${nameData['last']}";
 
       return RandomUser(
-          city: '', gender: 'xx', name: '', email: '', picture: '');
+          city: locationData['city'], gender: newUser['gender'], name: completeName,
+          email: newUser['email'], picture: pictureData['large']);
     } else {
       logError("Got error code ${response.statusCode}");
     }

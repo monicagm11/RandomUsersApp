@@ -6,6 +6,7 @@ import '../../../domain/entities/random_user.dart';
 
 class UserLocalDataSource {
   Database? _database;
+  String tableName = 'users';
 
   Future<Database> get database async {
     if (_database != null) return _database!;
@@ -28,6 +29,11 @@ class UserLocalDataSource {
     final db = await database;
     //TODO
     // aquí se debe llamar al db.insert
+    await db.insert(
+      tableName,
+      user.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
   Future<List<RandomUser>> getAllUsers() async {
@@ -36,7 +42,7 @@ class UserLocalDataSource {
     //TODO
     // aqui se debe hacer un query en la tabla users, la base de datos que retorna un List<Map<String, dynamic>> maps
 
-    List<Map<String, dynamic>> maps = <Map<String, dynamic>>[];
+    List<Map<String, dynamic>> maps = await db.query(tableName);
 
     return List.generate(maps.length, (i) {
       return RandomUser(
